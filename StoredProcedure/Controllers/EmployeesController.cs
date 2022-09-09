@@ -27,7 +27,7 @@ namespace StoredProcedure.Controllers
             DataTable employees = new DataTable();
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 SqlDataAdapter adapter = new SqlDataAdapter("StoredProcedure", connection);
                 adapter.SelectCommand.CommandType = CommandType.StoredProcedure;
                 adapter.SelectCommand.Parameters.AddWithValue("Event", "SELECT");
@@ -35,7 +35,7 @@ namespace StoredProcedure.Controllers
                 {
                     adapter.Fill(employees);
                 });
-                connection.Close();
+                await connection.CloseAsync();
             }
 
             return Ok(employees);
@@ -48,7 +48,7 @@ namespace StoredProcedure.Controllers
             Employee employee = new Employee();
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 SqlDataAdapter adapter = new SqlDataAdapter("StoredProcedure", connection);
                 adapter.SelectCommand.CommandType = CommandType.StoredProcedure;
                 adapter.SelectCommand.Parameters.AddWithValue("Event", "SELECTONE");
@@ -57,7 +57,7 @@ namespace StoredProcedure.Controllers
                 {
                     adapter.Fill(employees);
                 });
-                connection.Close();
+                await connection.CloseAsync();
             }
 
             if (employees.Rows.Count == 1)
@@ -80,7 +80,7 @@ namespace StoredProcedure.Controllers
         {
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 SqlCommand command = new SqlCommand("StoredProcedure", connection);
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("Event", "ADD");
@@ -88,7 +88,7 @@ namespace StoredProcedure.Controllers
                 command.Parameters.AddWithValue("Phone", employee.Phone);
                 command.Parameters.AddWithValue("Salary", employee.Salary);
                 await command.ExecuteNonQueryAsync();
-                connection.Close();
+                await connection.CloseAsync();
             }
 
             return Ok("Employee added successfully!");
@@ -99,7 +99,7 @@ namespace StoredProcedure.Controllers
         {
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 SqlCommand command = new SqlCommand("StoredProcedure", connection);
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("Event", "UPDATE");
@@ -108,7 +108,7 @@ namespace StoredProcedure.Controllers
                 command.Parameters.AddWithValue("Salary", employee.Salary);
                 command.Parameters.AddWithValue("EmployeeId", id);
                 await command.ExecuteNonQueryAsync();
-                connection.Close();
+                await connection.CloseAsync();
             }
 
             return Ok("Employee updated successfully!");
@@ -119,13 +119,13 @@ namespace StoredProcedure.Controllers
         {
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 SqlCommand command = new SqlCommand("StoredProcedure", connection);
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("Event", "DELETE");
                 command.Parameters.AddWithValue("EmployeeId", id);
                 await command.ExecuteNonQueryAsync();
-                connection.Close();
+                await connection.CloseAsync();
             }
 
             return Ok("Employee deleted successfully!");
